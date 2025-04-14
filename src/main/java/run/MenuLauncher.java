@@ -42,7 +42,7 @@ public class MenuLauncher {
     private static void printMenu() {
 
         System.out.println("\n──────────────────────────────");
-        System.out.println("Check Result === 👆 === To Menu === 👇 ");
+        System.out.println("Check Result === 👆 === To Menu Again === 👇 ");
         System.out.println("\n──────────────────────────────");
         System.out.println("=== 🚀 REST Assured API Test Menu ===");
         System.out.println("1️⃣  Run GET user test");
