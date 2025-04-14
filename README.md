@@ -16,7 +16,7 @@ mvn clean test
 
 ## Run menu
 ```bash
-mvn compile exec:java
+mvn clean test-compile exec:java 
 ```
 
 ## Generate Allure Report
