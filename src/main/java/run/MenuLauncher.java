@@ -32,8 +32,9 @@ public class MenuLauncher {
                 case "7" -> runTest("tests.InternalErrorTest");
                 case "8" -> runTest("tests.PerformanceTest");
                 case "9" -> runTest("tests.SchemaValidationTest");
+                case "10" -> runTest("tests.PatchUserTest"); // ✅ PATCH user test
                 case "0" -> System.out.println("👋 Exiting... Goodbye!");
-                default -> System.out.println("❌ Invalid choice. Please select from 0–9.");
+                default -> System.out.println("❌ Invalid choice. Please select from 0–10.");
             }
 
         } while (!choice.equals("0"));
@@ -45,21 +46,22 @@ public class MenuLauncher {
         System.out.println("Check Result === 👆 === To Menu Again === 👇 ");
         System.out.println("\n──────────────────────────────");
         System.out.println("=== 🚀 REST Assured API Test Menu ===");
-        System.out.println("1️⃣  Run GET user test");
-        System.out.println("2️⃣  Run POST user test");
-        System.out.println("3️⃣  Run PUT user test");
-        System.out.println("4️⃣  Run DELETE user test");
-        System.out.println("5️⃣  Run 400 Bad Request test");
-        System.out.println("6️⃣  Run 404 Not Found test");
-        System.out.println("7️⃣  Run 500 Internal Error test");
-        System.out.println("8️⃣  Run Performance test");
-        System.out.println("9️⃣  Run Schema Validation test");
+        System.out.println("1️⃣   Run GET user test");
+        System.out.println("2️⃣   Run POST user test");
+        System.out.println("3️⃣   Run PUT user test");
+        System.out.println("4️⃣   Run DELETE user test");
+        System.out.println("5️⃣   Run 400 Bad Request test");
+        System.out.println("6️⃣   Run 404 Not Found test");
+        System.out.println("7️⃣   Run 500 Internal Error test");
+        System.out.println("8️⃣   Run Performance test");
+        System.out.println("9️⃣   Run Schema Validation test");
+        System.out.println("1️⃣0️⃣ Run PATCH user test");
         System.out.println("0️⃣  Exit");
-        System.out.print("👉 Choose an option: ");
+        System.out.print("👉  Choose an option: ");
     }
 
     private static void runTest(String className) {
-        LoggerUtil.printSection("▶ Running test class", className);
+        LoggerUtil.printSection("▶️ Running test class", className);
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(DiscoverySelectors.selectClass(className))
                 .build();

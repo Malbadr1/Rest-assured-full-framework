@@ -12,6 +12,7 @@ import static io.restassured.RestAssured.given;
  * - ✅ GET user by ID
  * - ✅ POST a new user
  * - ✅ PUT to update user
+ * - ✅ PATCH to partially update user
  * - ✅ DELETE user
  * - ✅ Negative test scenarios (404 Not Found, 400 Bad Request, etc.)
  * - ✅ Simulated server error (500 Internal Server Error)
@@ -63,6 +64,23 @@ public class UserService {
                 .body(body)
                 .when()
                 .put("/api/users/" + id);
+
+        System.out.println("📥 Status Code: " + response.statusCode());
+        return response;
+    }
+
+    /**
+     * ✅ PATCH to partially update a user (expecting 200 OK)
+     */
+    public static Response patchUser(int id, String job) {
+        String body = String.format("{\"job\":\"%s\"}", job);
+        System.out.println("🔧 Sending PATCH request to /api/users/" + id + " with body:\n" + body);
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .patch("/api/users/" + id);
 
         System.out.println("📥 Status Code: " + response.statusCode());
         return response;
