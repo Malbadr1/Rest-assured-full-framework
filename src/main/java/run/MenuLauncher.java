@@ -27,21 +27,25 @@ public class MenuLauncher {
                 case "2" -> runTest("tests.CreateUserTest");
                 case "3" -> runTest("tests.UpdateUserTest");
                 case "4" -> runTest("tests.DeleteUserTest");
-                case "5" -> runTest("tests.BadRequestTest");
-                case "6" -> runTest("tests.FailedUserTest");
-                case "7" -> runTest("tests.InternalErrorTest");
-                case "8" -> runTest("tests.PerformanceTest");
-                case "9" -> runTest("tests.SchemaValidationTest");
-                case "10" -> runTest("tests.PatchUserTest"); // ✅ PATCH user test
+                case "5" -> runTest("tests.PatchUserTest"); // ✅ Moved PATCH test here
+                case "6" -> runTest("tests.BadRequestTest");
+                case "7" -> runTest("tests.FailedUserTest");
+                case "8" -> runTest("tests.InternalErrorTest");
+                case "9" -> runTest("tests.PerformanceTest");
+                case "10" -> runTest("tests.SchemaValidationTest");
+                case "11" -> runTest("tests.AuthTokenTest");
+                case "12" -> runTest("tests.BasicAuthTest");
+                case "13" -> runTest("tests.TimeoutTest");
+                case "14" -> runTest("tests.PostFromFileTest");
+                case "15" -> runTest("tests.FileUploadTest");
                 case "0" -> System.out.println("👋 Exiting... Goodbye!");
-                default -> System.out.println("❌ Invalid choice. Please select from 0–10.");
+                default -> System.out.println("❌ Invalid choice. Please select from 0–15.");
             }
 
         } while (!choice.equals("0"));
     }
 
     private static void printMenu() {
-
         System.out.println("\n──────────────────────────────");
         System.out.println("Check Result === 👆 === To Menu Again === 👇 ");
         System.out.println("\n──────────────────────────────");
@@ -50,13 +54,18 @@ public class MenuLauncher {
         System.out.println("2️⃣   Run POST user test");
         System.out.println("3️⃣   Run PUT user test");
         System.out.println("4️⃣   Run DELETE user test");
-        System.out.println("5️⃣   Run 400 Bad Request test");
-        System.out.println("6️⃣   Run 404 Not Found test");
-        System.out.println("7️⃣   Run 500 Internal Error test");
-        System.out.println("8️⃣   Run Performance test");
-        System.out.println("9️⃣   Run Schema Validation test");
-        System.out.println("1️⃣0️⃣ Run PATCH user test");
-        System.out.println("0️⃣  Exit");
+        System.out.println("5️⃣   Run PATCH user test");
+        System.out.println("6️⃣   Run 400 Bad Request test");
+        System.out.println("7️⃣   Run 404 Not Found test");
+        System.out.println("8️⃣   Run 500 Internal Error test");
+        System.out.println("9️⃣   Run Performance test");
+        System.out.println("1️⃣0️⃣ Run Schema Validation test");
+        System.out.println("1️⃣1️⃣ Run Bearer Token Auth test");
+        System.out.println("1️⃣2️⃣ Run Basic Auth test");
+        System.out.println("1️⃣3️⃣ Run Timeout simulation test");
+        System.out.println("1️⃣4️⃣ Run POST from JSON file test");
+        System.out.println("1️⃣5️⃣ Run File Upload test");
+        System.out.println("0️⃣   Exit");
         System.out.print("👉  Choose an option: ");
     }
 
