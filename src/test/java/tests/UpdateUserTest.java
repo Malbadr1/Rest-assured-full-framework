@@ -8,11 +8,16 @@ import org.junit.jupiter.api.Test;
 import service.UserService;
 import utils.LoggerUtil;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ✅ This test verifies that a user can be updated successfully.
- * Expected: 200 OK status with updated name and job in response.
+ * 🛠️ Update User Test
+ * ✅ This test verifies that a user can be updated successfully via PUT request.
+ * Expected: 200 OK with updated name and job in response.
  */
 @Epic("API Testing")
 @Feature("User Update")
@@ -23,24 +28,48 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UpdateUserTest extends TestBase {
 
     @Test
-    @Description("Update an existing user and verify the name and job fields match the request.")
+    @Description("Update an existing user (ID = 2) and verify name and job are correctly updated in response.")
     void shouldUpdateUserSuccessfully() {
 
-        int userId = 2;
-        String updatedName = "Al badri Updated";
-        String updatedJob = " QA Engineer";
+        System.out.print("🔢 Enter user ID to fetch: ");
+        Scanner scanner = new Scanner(System.in);
+        int userId = scanner.nextInt();
 
+        String updatedName = "Al badri Updated";
+        String updatedJob = "QA Engineer";
+
+        // 📌 Section
         LoggerUtil.printSection("UPDATE USER", "Testing update of user with ID: " + userId);
+
+        // 📤 Request
         LoggerUtil.printRequest("PUT", "/api/users/" + userId);
 
+        // 🔸 Payload
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("name", updatedName);
+        requestBody.put("job", updatedJob);
+        LoggerUtil.printRequestBody(requestBody);
+
+        // 🕒 Timing
+        long start = System.currentTimeMillis();
         Response response = UserService.updateUser(userId, updatedName, updatedJob);
+        long end = System.currentTimeMillis();
+        long responseTime = end - start;
+        LoggerUtil.printResponseTime(responseTime);
 
-        LoggerUtil.printResponse(response.statusCode(), response.asString());
+        // 📥 Response
+        LoggerUtil.printResponse(response.statusCode(), response.asPrettyString());
 
+        // ✅ Assertion
         assertEquals(200, response.statusCode(), "❌ Expected 200 OK");
         assertEquals(updatedName, response.jsonPath().getString("name"), "❌ Name mismatch");
         assertEquals(updatedJob, response.jsonPath().getString("job"), "❌ Job mismatch");
 
+        // 📌 Summary
+        LoggerUtil.printJsonSummary(response.jsonPath(), "id", "name", "username", "email", "job", "createdAt");
+
+        // 🎉 Success
         LoggerUtil.printSuccess("✅ 200 OK - User updated successfully 🛠️");
+
     }
 }

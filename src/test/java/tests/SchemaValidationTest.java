@@ -6,40 +6,66 @@ import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.UserService;
 import utils.LoggerUtil;
 
+import java.util.Scanner;
+
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * 🧾 JSON Schema Validation Test
- * Validates that the structure of the user response matches the expected schema.
+ * 🧾 This test validates the structure of the response against a predefined JSON schema.
+ * The schema must match the actual JSON returned by the API (without "data" wrapper).
  */
 @Epic("API Testing")
 @Feature("Schema Validation")
-@Story("User schema matches the expected JSON structure")
+@Story("Ensure API response matches expected schema")
 @Owner("Mohanad Albadri")
 @Severity(SeverityLevel.CRITICAL)
-@DisplayName("🧾 Validate user JSON schema (ID = 2)")
+@DisplayName("🧾 Validate JSON schema for /api/users/{id}")
 public class SchemaValidationTest extends TestBase {
 
     @Test
-    @Description("Ensure the API response for GET /api/users/2 matches the defined JSON schema in user-schema.json")
-    void shouldMatchExpectedUserSchema() {
+    @Description("Validates that the GET /api/users/{id} response matches the defined schema in user-schema.json")
+    void shouldMatchUserSchema() {
+        System.out.print("🔢 Enter user ID to fetch: ");
+        Scanner scanner = new Scanner(System.in);
+        int userId = scanner.nextInt();
 
-        LoggerUtil.printSection("SCHEMA VALIDATION", "Checking response structure for user 2");
-        LoggerUtil.printRequest("GET", "/api/users/2");
 
-        Response response = UserService.getUser(2);
+        // 📌 Section header
+        LoggerUtil.printSection("SCHEMA VALIDATION", "Validating JSON schema of user with ID: " + userId);
+        LoggerUtil.printRequest("GET", "/api/users/" + userId);
 
-        LoggerUtil.printInfo("📥 Status Code: " + response.statusCode());
-        assertEquals(200, response.statusCode(), "Expected 200 OK");
+        // 🔄 Send request
+        Response response = given()
+                .baseUri("https://67ff96c958f18d7209f1dac6.mockapi.io")
+                .when()
+                .get("/api/users/" + userId);
 
-        LoggerUtil.printInfo("🧾 Validating JSON Schema against user-schema.json");
+        // ⏱️ Log response time
+        long responseTime = response.time();
+        LoggerUtil.printResponseTime(responseTime);
 
+        // 📥 Print response
+        LoggerUtil.printResponse(response.statusCode(), response.getBody().asPrettyString());
+
+        // ✅ Assert status code is 200
+        assertEquals(200, response.statusCode(), "❌ Expected 200 OK");
+
+        // 📊 Schema validation
+        LoggerUtil.printInfo("🧾 Validating JSON Schema against schemas/user-schema.json");
         response.then().assertThat()
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/user-schema.json"));
 
-        LoggerUtil.printSuccess("✅ JSON Schema validation passed!");
+        // 📌 Summary
+        System.out.println("📌 SUMMARY");
+        System.out.println("────────────");
+        System.out.println("📍 ID           : " + userId);
+        System.out.println("📍 Status Code  : " + response.statusCode());
+        System.out.println("📍 Time Taken   : " + responseTime + "ms");
+
+        // ✅ Success message
+        LoggerUtil.printSuccess("✅ JSON Schema validation passed successfully! 🎉");
     }
 }

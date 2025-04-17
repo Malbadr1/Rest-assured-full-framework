@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 📤 This test verifies file upload functionality using multipart/form-data.
+ * It uploads a file to the /api/upload endpoint and expects a 200 OK response.
  */
 @Epic("API Testing")
 @Feature("File Upload")
@@ -22,13 +23,39 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileUploadTest extends TestBase {
 
     @Test
-    @Description("Ensure the file upload API works and returns status 200")
+    @Description("Ensure the file upload API works and returns status 200 with proper handling")
     void testFileUpload() {
-        String path = "src/test/resources/files/sample.txt";
-        Response response = UserService.uploadFile(path);
+        String filePath = "src/test/resources/files/sample.txt";
 
+        // 📌 Section
+        LoggerUtil.printSection("FILE UPLOAD", "Uploading file from: " + filePath);
+
+        // 📤 Request
+        LoggerUtil.printRequest("POST", "/api/upload");
+        System.out.println("📎 File: " + filePath);
+
+        // 🔄 Perform Upload
+        Response response = UserService.uploadFile(filePath);
+
+
+        // 📥 Response
         LoggerUtil.printResponse(response.statusCode(), response.asPrettyString());
+
+        // ✅ Assertion
         assertEquals(200, response.statusCode(), "❌ Expected 200 OK");
-        LoggerUtil.printSuccess("✅ File uploaded successfully");
+
+        // 📌 Summary
+        System.out.println("\n📌 SUMMARY");
+        System.out.println("────────────");
+        System.out.println("📍 File       : " + filePath);
+        System.out.println("📍 Status     : " + response.statusCode());
+        System.out.println("📍 Upload Time: " + response.time() + " ms");
+
+        // ✅ Done
+        LoggerUtil.printSuccess("✅ File uploaded successfully 📤");
+
+        // ⏱️ Measure and print response time
+        long time = response.time();
+        LoggerUtil.printResponseTime(time);
     }
 }

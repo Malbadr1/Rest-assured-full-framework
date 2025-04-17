@@ -27,7 +27,7 @@ public class MenuLauncher {
                 case "2" -> runTest("tests.CreateUserTest");
                 case "3" -> runTest("tests.UpdateUserTest");
                 case "4" -> runTest("tests.DeleteUserTest");
-                case "5" -> runTest("tests.PatchUserTest"); // ✅ Moved PATCH test here
+                case "5" -> runTest("tests.PatchUserTest");
                 case "6" -> runTest("tests.BadRequestTest");
                 case "7" -> runTest("tests.FailedUserTest");
                 case "8" -> runTest("tests.InternalErrorTest");

@@ -4,6 +4,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.config.RestAssuredConfig.config;
@@ -14,7 +16,7 @@ import static io.restassured.config.HttpClientConfig.httpClientConfig;
  *
  * Handles the following:
  * - ✅ GET user by ID
- * - ✅ POST a new user
+ * - ✅ POST a new user with full fields
  * - ✅ PUT to update user
  * - ✅ PATCH to partially update user
  * - ✅ DELETE user
@@ -32,11 +34,11 @@ public class UserService {
 
     /**
      * ✅ GET a user by ID
-     * @param id The user ID
+     * @param id The user ID to retrieve
      * @return Response containing user data
      */
     public static Response getUser(int id) {
-        System.out.println("📤 Sending GET request to /api/users/" + id);
+        System.out.println("\uD83D\uDCE4 Sending GET request to /api/users/" + id);
         return given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -46,33 +48,46 @@ public class UserService {
     }
 
     /**
-     * ✅ POST a new user with name and job
-     * @param name The name of the user
-     * @param job The job title of the user
-     * @return Response after user creation
+     * ✅ POST a new user with full details
+     * Sends the user data to the /api/users endpoint and returns the response.
+     *
+     * @param name     Full name of the user
+     * @param username Username
+     * @param email    Email address
+     * @param avatar   Avatar URL
+     * @param status   User status (e.g., active)
+     * @param role     User role (e.g., Admin, QA Tester)
+     * @return Response object from the API
      */
-    public static Response createUser(String name, String job) {
-        String body = String.format("{\"name\":\"%s\", \"job\":\"%s\"}", name, job);
-        System.out.println("📤 Sending POST request to /api/users with body:\n" + body);
+    public static Response createUser(String name, String username, String email, String avatar, String status, String role) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name", name);
+        requestBody.put("username", username);
+        requestBody.put("email", email);
+        requestBody.put("avatar", avatar);
+        requestBody.put("status", status);
+        requestBody.put("role", role);
+
         return given()
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(requestBody)
                 .when()
                 .post("/api/users")
                 .then()
                 .extract().response();
     }
 
+
     /**
-     * ✅ PUT to update an existing user
-     * @param id The user ID
-     * @param name Updated name
-     * @param job Updated job
-     * @return Response with updated user
+     * ✅ PUT - Fully update an existing user by ID
+     * @param id User ID to update
+     * @param name New name
+     * @param job New job title
+     * @return Response object
      */
     public static Response updateUser(int id, String name, String job) {
         String body = String.format("{\"name\":\"%s\", \"job\":\"%s\"}", name, job);
-        System.out.println("♻️ Sending PUT request to /api/users/" + id + " with body:\n" + body);
+        System.out.println("\u267B\uFE0F Sending PUT request to /api/users/" + id + " with body:\n" + body);
         return given()
                 .contentType(ContentType.JSON)
                 .body(body)
@@ -83,14 +98,14 @@ public class UserService {
     }
 
     /**
-     * ✅ PATCH request to partially update user data
-     * @param id The user ID
-     * @param job The new job title
-     * @return Response with partial update
+     * ✅ PATCH - Partially update user by ID (e.g., only the job)
+     * @param id User ID
+     * @param job New job value
+     * @return Response
      */
     public static Response patchUser(int id, String job) {
         String body = String.format("{\"job\":\"%s\"}", job);
-        System.out.println("🔧 Sending PATCH request to /api/users/" + id + " with body:\n" + body);
+        System.out.println("\uD83D\uDD27 Sending PATCH request to /api/users/" + id + " with body:\n" + body);
         return given()
                 .contentType(ContentType.JSON)
                 .body(body)
@@ -103,10 +118,10 @@ public class UserService {
     /**
      * ✅ DELETE a user by ID
      * @param id The user ID
-     * @return Response with 204 status if deleted
+     * @return Response with 204 status if deleted successfully
      */
     public static Response deleteUser(int id) {
-        System.out.println("🗑️ Sending DELETE request to /api/users/" + id);
+        System.out.println("\uD83D\uDDD1️ Sending DELETE request to /api/users/" + id);
         return given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -116,9 +131,9 @@ public class UserService {
     }
 
     /**
-     * ❌ GET request to a non-existent user to simulate 404
-     * @param id The user ID that does not exist
-     * @return Response expected to be 404
+     * ❌ GET non-existent user to simulate 404 Not Found
+     * @param id Invalid ID
+     * @return 404 Response
      */
     public static Response getInvalidUser(int id) {
         System.out.println("❗ Sending GET request to /api/users/" + id + " (expecting 404)");
@@ -131,8 +146,8 @@ public class UserService {
     }
 
     /**
-     * ❌ Send malformed POST body to simulate 400 Bad Request
-     * @return Response expected to be 400
+     * ❌ Send malformed JSON to simulate 400 Bad Request
+     * @return 400 Response
      */
     public static Response sendBadRequest() {
         System.out.println("❗ Sending invalid POST body to /api/users");
@@ -146,8 +161,8 @@ public class UserService {
     }
 
     /**
-     * ❌ Simulate 500 error using a fake or broken endpoint
-     * @return Response with status 500 (if backend handles it that way)
+     * ❌ Trigger server error by calling a broken endpoint (simulate 500)
+     * @return 500 Response if backend handles it that way
      */
     public static Response triggerServerError() {
         System.out.println("🔥 Sending request to trigger 500 error (non-existent endpoint)");
@@ -160,8 +175,8 @@ public class UserService {
     }
 
     /**
-     * 🕒 Measure response time for GET request (performance check)
-     * @param id The user ID
+     * 🕒 Measure response time for a GET request to evaluate performance
+     * @param id User ID
      * @return Response time in milliseconds
      */
     public static long getResponseTime(int id) {
@@ -175,13 +190,13 @@ public class UserService {
     }
 
     /**
-     * 🔐 Perform GET request with Bearer Token authentication
-     * @param token The Bearer token
-     * @param id The user ID
+     * 🔐 Use Bearer Token for authenticated GET request
+     * @param token Bearer token
+     * @param id User ID
      * @return Authenticated response
      */
     public static Response getUserWithBearerToken(String token, int id) {
-        System.out.println("🛡️ Sending GET with Bearer token to /api/users/" + id);
+        System.out.println("\uD83D\uDEA1️ Sending GET with Bearer token to /api/users/" + id);
         return given()
                 .auth().oauth2(token)
                 .contentType(ContentType.JSON)
@@ -192,14 +207,14 @@ public class UserService {
     }
 
     /**
-     * 🔐 Perform GET request with Basic Auth credentials
-     * @param username The username
-     * @param password The password
-     * @param id The user ID
+     * 🔐 Use Basic Auth for authenticated GET request
+     * @param username Username
+     * @param password Password
+     * @param id User ID
      * @return Authenticated response
      */
     public static Response getUserWithBasicAuth(String username, String password, int id) {
-        System.out.println("🔐 Sending GET with Basic Auth to /api/users/" + id);
+        System.out.println("\uD83D\uDD10 Sending GET with Basic Auth to /api/users/" + id);
         return given()
                 .auth().preemptive().basic(username, password)
                 .contentType(ContentType.JSON)
@@ -210,9 +225,9 @@ public class UserService {
     }
 
     /**
-     * ⏳ Simulate a slow API response for timeout testing
-     * @param timeoutMs Timeout threshold in milliseconds
-     * @return Response from delayed endpoint
+     * ⏳ Simulate delayed response for timeout testing
+     * @param timeoutMs Threshold in ms
+     * @return Response
      */
     public static Response simulateTimeout(int timeoutMs) {
         System.out.println("🐢 Simulating timeout with /api/slow endpoint");
@@ -226,12 +241,12 @@ public class UserService {
     }
 
     /**
-     * 📄 Send POST request using JSON body from file
-     * @param filePath Path to the JSON file
-     * @return Response from POST
+     * 📄 Send POST using external JSON file as body
+     * @param filePath File path to JSON
+     * @return Response
      */
     public static Response postUserFromFile(String filePath) {
-        System.out.println("📂 Sending POST request with JSON from file: " + filePath);
+        System.out.println("\uD83D\uDCC2 Sending POST request with JSON from file: " + filePath);
         File file = new File(filePath);
         return given()
                 .contentType(ContentType.JSON)
@@ -243,12 +258,12 @@ public class UserService {
     }
 
     /**
-     * 📤 Upload a file to the server using multipart/form-data
-     * @param filePath Path to the file to upload
-     * @return Response from upload endpoint
+     * 📤 Upload file using multipart/form-data
+     * @param filePath File path
+     * @return Response
      */
     public static Response uploadFile(String filePath) {
-        System.out.println("📤 Uploading file: " + filePath);
+        System.out.println("\uD83D\uDCE4 Uploading file: " + filePath);
         File file = new File(filePath);
         return given()
                 .multiPart("file", file)
@@ -257,4 +272,21 @@ public class UserService {
                 .then()
                 .extract().response();
     }
+
+    /**
+     * 🚫 Sends a GET request to fetch a user **without** providing a Bearer token.
+     * This method is used to test unauthorized access or token absence handling.
+     *
+     * @param userId the ID of the user to retrieve
+     * @return the API response without any Authorization header
+     */
+    public static Response getUserWithoutToken(int userId) {
+        System.out.println("🚫 Sending request without Bearer token for user ID: " + userId);
+        return given()
+                .when()
+                .get("/api/users/" + userId)
+                .then()
+                .extract().response();
+    }
+
 }

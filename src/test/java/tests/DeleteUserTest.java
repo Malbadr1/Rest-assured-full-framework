@@ -8,36 +8,55 @@ import org.junit.jupiter.api.Test;
 import service.UserService;
 import utils.LoggerUtil;
 
+import java.util.Scanner;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ✅ This test verifies that a user can be deleted successfully.
- * Expected: 204 No Content status and empty response body.
+ * 🗑️ This test verifies that a user can be deleted successfully via DELETE request.
+ * Note: The MockAPI returns 200 OK and user JSON (instead of 204 No Content).
  */
 @Epic("API Testing")
 @Feature("User Endpoint")
 @Story("Delete a user via DELETE /api/users/{id}")
 @Owner("Mohanad Albadri")
 @Severity(SeverityLevel.NORMAL)
-@DisplayName("✅ Delete User - Should return 204 No Content")
+@DisplayName("🗑️ Delete User - Should return 200 OK with confirmation")
 public class DeleteUserTest extends TestBase {
 
     @Test
-    @Description("Ensure the API successfully deletes a user and returns 204 status code with empty response body")
+    @Description("Ensure the API returns 200 OK and deleted user data when a user is deleted (MockAPI behavior)")
     void shouldDeleteUserSuccessfully() {
 
-        int userId = 2;
+        System.out.print("🔢 Enter user ID to fetch: ");
+        Scanner scanner = new Scanner(System.in);
+        int userId = scanner.nextInt();
 
+
+        // 📌 Section Header
         LoggerUtil.printSection("DELETE USER", "Testing deletion of user with ID: " + userId);
-        LoggerUtil.printRequest("DELETE", "/api/users/" + userId);
 
+        // 📤 Request Info
+        LoggerUtil.printRequest("DELETE", "/api/users/" + userId);
+        System.out.println("🗑️ Sending DELETE request to /api/users/" + userId);
+
+        // 🔄 Call the DELETE endpoint
         Response response = UserService.deleteUser(userId);
 
-        LoggerUtil.printResponse(response.statusCode(), response.asString());
 
-        assertEquals(204, response.statusCode(), "❌ Expected 204 No Content");
-        assertTrue(response.asString().isEmpty(), "❌ Response should be empty");
+        // 📥 Print full response
+        LoggerUtil.printResponse(response.statusCode(), response.asPrettyString());
 
-        LoggerUtil.printSuccess("✅ 204 No Content - User deleted successfully 🗑️");
+        // ✅ Assert actual behavior of MockAPI (200 + JSON)
+        assertEquals(200, response.statusCode(), "❌ Expected 200 OK from MockAPI");
+        assertFalse(response.asString().isEmpty(), "❌ Response should contain deleted user info");
+
+        // 📌 Print Summary
+        LoggerUtil.printJsonSummary(response.jsonPath(), "id", "name", "username", "email", "role", "createdAt");
+
+        // ✅ Final success
+        LoggerUtil.printSuccess("✅ 200 OK - User deleted successfully 🗑️ (MockAPI behavior)");
+        // ⏱️ Measure & print response time
+        LoggerUtil.printResponseTime(response.time());
     }
 }

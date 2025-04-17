@@ -30,7 +30,6 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>json-path</artifactId>
             <version>5.4.0</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- 🔁 Jackson: JSON serialization and deserialization -->
